@@ -11,4 +11,8 @@ public class RutaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ruta);
     }
+
+    // hola a todos
+    String alonso = "";
+
 }
