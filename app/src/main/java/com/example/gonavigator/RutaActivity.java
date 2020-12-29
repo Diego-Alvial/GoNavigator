@@ -15,4 +15,7 @@ public class RutaActivity extends AppCompatActivity {
     // hola a todos
     String alonso = "";
 
+    //Hola de vuelta
+    String diego = ":)";
+
 }
