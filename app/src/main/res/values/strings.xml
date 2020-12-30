@@ -6,6 +6,8 @@
     <string name="direccion">Ingrese Dirección</string>
     <string name="calcular_ruta">Calcular Ruta</string>
     <string name="eliminar_ruta">Eliminar Ruta</string>
+    <string name="mapa_string">Mapa</string>
+    <string name="ruta_string">Ruta</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

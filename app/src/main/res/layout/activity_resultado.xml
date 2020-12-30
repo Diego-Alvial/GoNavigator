@@ -16,13 +16,13 @@
             android:id="@+id/tab_Mapa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mapa" />
+            android:text="@string/mapa_string" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_Ruta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ruta" />
+            android:text="@string/ruta_string" />
 
     </com.google.android.material.tabs.TabLayout>
 

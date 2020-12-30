@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         this.btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ResultadoActivity.class);
+                Intent intent = new Intent(v.getContext(), RutaActivity.class);
                 startActivity(intent);
             }
         });
