@@ -3,7 +3,9 @@ package com.example.gonavigator;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +33,9 @@ public class RutaActivity extends AppCompatActivity {
     TextView tvCiudadDirIni;
     Button btnCalcularRuta;
     Button btnEliminarRuta;
+
+    //estos son los objetos de tipo EDITTEXT
+   // private EditText et_nombre_ruta, et_dir_inicial, et_dir_nueva;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,4 +85,51 @@ public class RutaActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+    // metodos para dar de alta las rutas
+    // guardar las o la ruta ingresada
+    public void Registrar(View view)
+    {
+        // creamos un objeto de la clase que se creo anteriormente con nombre admin = a un objeto de la misma clase(parametros: nombre de la DB, version 1, )
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion_BD",null, 1);
+
+        // se crea un objeto de la clase SQLite + nombre: admin luego se abre la base de datos en modo lectura y escritura con getWritableDatabase()
+        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+
+        // aqui trabajamos con los datos que el usuario nos proporcione
+        String nombre = etNombreRuta.getText().toString();
+        String dir_inicial = etDirInicial.getText().toString();
+        String dir_nueva = etDirNueva.getText().toString();
+
+        // aqui validamos que si se ingresen datos
+        if(!nombre.isEmpty() && !dir_inicial.isEmpty() && !dir_nueva.isEmpty())
+        {
+            // vamos a guardar en nuestra base de datos lo que el usuario a escrito
+            ContentValues registro = new ContentValues();
+            registro.put("nombre",nombre);
+            registro.put("dir_inicial",dir_inicial);
+            registro.put("dir_nueva",dir_nueva);
+
+            // aqui lo insertamos dentro de la tabla ruta
+            //BaseDeDatos.insert("rutas", null, registro);
+
+            // aqui cerramos la entrada de la base de datos
+            BaseDeDatos.close();
+
+            // limpiaremos los campos
+            etNombreRuta.setText("");
+            etDirInicial.setText("");
+            etDirNueva.setText("");
+
+            Toast.makeText(this,"Registro exitoso", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(this,"Debe llenar los campos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }
