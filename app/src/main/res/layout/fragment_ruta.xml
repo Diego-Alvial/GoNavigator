@@ -11,36 +11,36 @@
 
     <ListView
         android:id="@+id/lv_dir_ordenado"
-        android:layout_width="372dp"
+        android:layout_width="360dp"
         android:layout_height="450dp">
 
     </ListView>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button8"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/lista_rutas" />
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="122dp"
+            android:layout_width="59dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <Button
             android:id="@+id/button9"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/editar_ruta" />
     </LinearLayout>
 
 </LinearLayout>
