@@ -1,66 +1,123 @@
 package com.example.gonavigator.Controlador;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
 
-import com.example.gonavigator.R;
+import com.example.gonavigator.AdminSQLiteOpenHelper;
+import com.example.gonavigator.models.Direcciones;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Mapa#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Mapa extends Fragment {
+public class Mapa extends SupportMapFragment implements OnMapReadyCallback {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final float DEFAULT_ZOOM = 15f;
 
     public Mapa() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Mapa.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Mapa newInstance(String param1, String param2) {
-        Mapa fragment = new Mapa();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        Log.i("Inicializacion mapa", "El mapa fue creado sin problemas");
+
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+        //FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        List<Direcciones> direcciones = extraerDatosBD();
+
+        for(Direcciones item: direcciones) {
+            addMarker(item, googleMap, DEFAULT_ZOOM);
+        }
+
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getMapAsync(this);
+    }
+
+
+
+    public void addMarker(Direcciones direccion, GoogleMap googleMap, float zoom){
+
+    LatLng pos = new LatLng(direccion.getLatitud(), direccion.getLongitud());
+    MarkerOptions mk = new MarkerOptions().position(pos).title(direccion.getNombre_dir());
+    googleMap.addMarker(mk);
+    Log.i("Marker agregado", direccion.getNombre_dir());
+
+    if(direccion.isInicial()){
+            Log.i("Marker inicial", String.valueOf(direccion.isInicial()));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mapa, container, false);
+    public List<Direcciones> extraerDatosBD(){
+
+        List<Direcciones> direcciones = new ArrayList<>();
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getContext(),"rutas_BD",null, 1);
+        SQLiteDatabase bd = admin.getReadableDatabase();
+        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
+
+        bd.setForeignKeyConstraintsEnabled(true);
+
+        int id = prefs.getInt("id_RUTA", 0);
+
+        String[] args = new String[]{String.valueOf(id)};
+
+        Cursor cursor = bd.rawQuery("SELECT * FROM Direcciones WHERE id_ruta = ?", args);
+
+        if(cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Direcciones direccion= new Direcciones();
+
+                direccion.setNombre_dir(cursor.getString(1));
+                Log.i("BD de direcciones", direccion.getNombre_dir());
+
+                direccion.setCiudad_dir(cursor.getString(2));
+                Log.i("BD de direcciones", direccion.getCiudad_dir());
+
+                direccion.setLatitud(cursor.getDouble(3));
+                Log.i("BD de direcciones", String.valueOf(direccion.getLatitud()));
+
+                direccion.setLongitud(cursor.getDouble(4));
+                Log.i("BD de direcciones", String.valueOf(direccion.getLongitud()));
+
+                direccion.setInicial(cursor.getInt(5) == 1);
+                Log.i("BD de direcciones", String.valueOf(direccion.isInicial()));
+
+                direcciones.add(direccion);
+                cursor.moveToNext();
+            }
+        }
+        //Borra todas ruta en cascada(Borra las direcciones y pasos que referencian a una ruta tambien)
+        //TODO: Basicamente borra todo, solo usar en casos de prueba
+        bd.delete("Rutas", null, null);
+        admin.onUpgrade(bd, 1, 1);
+
+        cursor.close();
+
+        return direcciones;
     }
 }

@@ -3,8 +3,11 @@ package com.example.gonavigator;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -26,6 +29,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.encoders.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +48,7 @@ public class RutaActivity extends AppCompatActivity {
     private ImageButton ibtnBorrarDir;
     private ListView lvDirecciones;
 
+    private SharedPreferences prefs;
     private final Direcciones inicial = new Direcciones();
     private final List<Direcciones> listaDireccion = new ArrayList<>();
     private Rutas ruta = new Rutas();
@@ -64,11 +69,11 @@ public class RutaActivity extends AppCompatActivity {
         ibtnBorrarDir = findViewById(R.id.ibtn_borrar_dir);
         lvDirecciones = findViewById(R.id.lv_direcciones);
 
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        this.prefs = this.getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
 
 
         //Inicializar lugares para el autorelleno con la key de la API
-        Places.initialize(this, "AIzaSyBUVlX9y8_henwvB8AOPo0hfr0Edc4FrTw");
+        Places.initialize(this, getString(R.string.google_maps_key));
 
         //If para verificar si la ruta es nueva o una que se quiere modificar
         if(this.ruta.getDistancia() == null){
@@ -102,6 +107,7 @@ public class RutaActivity extends AppCompatActivity {
 
                     ruta.setNombe_Ruta(etNombreRuta.getText().toString());
                     if(Registrar()){
+
                         Intent intent = new Intent(v.getContext(), ResultadoActivity.class);
                         startActivity(intent);
                     }
@@ -221,6 +227,9 @@ public class RutaActivity extends AppCompatActivity {
 
                 cursor.close();
 
+                //Guardar la ID en las shared Preferences
+                saveOnSharedPreferences(rutaId);
+
                 // vamos a guardar en nuestra base de datos lo que el usuario a escrito
                 ContentValues cvDirecciones = new ContentValues();
                 cvDirecciones.put("id_ruta",rutaId);
@@ -255,5 +264,15 @@ public class RutaActivity extends AppCompatActivity {
             ///////Codigo para cuando se edita la ruta////////////////
             return false;
         }
+    }
+
+    //Método para guardar las shared preferences de usuario y contraseña
+    private void saveOnSharedPreferences(int idRuta){
+        SharedPreferences.Editor editor = this.prefs.edit();
+        editor.clear();
+
+        editor.putInt("id_RUTA", idRuta);
+
+        editor.apply();
     }
 }
