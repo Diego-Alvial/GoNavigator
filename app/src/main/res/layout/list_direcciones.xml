@@ -16,12 +16,14 @@
         <TextView
             android:id="@+id/tv_nombre_dir"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/places_autocomplete_fullscreen_background" />
 
         <TextView
             android:id="@+id/tv_ciudad_dir"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/places_autocomplete_fullscreen_background" />
 
     </LinearLayout>
 
@@ -30,7 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:backgroundTint="@color/white"
+        android:background="@color/places_autocomplete_fullscreen_background"
+        android:backgroundTint="@color/places_autocomplete_fullscreen_background"
         android:contentDescription="@string/eliminar_direccion"
         app:srcCompat="@drawable/ic_delete" />
 
