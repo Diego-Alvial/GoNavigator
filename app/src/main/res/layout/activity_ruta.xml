@@ -54,7 +54,7 @@
             android:drawableStart="@drawable/ic_location"
             android:drawablePadding="16dp"
             android:ems="10"
-            android:hint="@string/direccion"
+            android:hint="@string/direccion_destino"
             android:importantForAutofill="no"
             android:inputType="textPersonName" />
 
