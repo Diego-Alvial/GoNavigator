@@ -11,4 +11,6 @@
     <string name="editar_ruta">Editar Ruta</string>
     <string name="mapa_string">Mapa</string>
     <string name="ruta_string">Ruta</string>
+    <string name="go">Go</string>
+    <string name="direccion_destino">Ingrese Destino</string>
 </resources>
