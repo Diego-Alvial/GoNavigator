@@ -113,8 +113,8 @@ public class Mapa extends SupportMapFragment implements OnMapReadyCallback {
         }
         //Borra todas ruta en cascada(Borra las direcciones y pasos que referencian a una ruta tambien)
         //TODO: Basicamente borra todo, solo usar en casos de prueba
-        bd.delete("Rutas", null, null);
-        admin.onUpgrade(bd, 1, 1);
+        //bd.delete("Rutas", null, null);
+        //admin.onUpgrade(bd, 1, 1);
 
         cursor.close();
 
