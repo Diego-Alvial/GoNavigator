@@ -13,13 +13,13 @@ import com.example.gonavigator.models.Direcciones;
 
 import java.util.List;
 
-public class MyAdapterDireccion extends BaseAdapter {
+public class DireccionAdapter extends BaseAdapter {
 
     private final Context context;
     private List<Direcciones> direccionesList;
     private final int layout;
 
-    public MyAdapterDireccion(Context context, List<Direcciones> direccionesList, int layout){
+    public DireccionAdapter(Context context, List<Direcciones> direccionesList, int layout){
         this.context = context;
         this. direccionesList = direccionesList;
         this. layout = layout;
@@ -58,7 +58,7 @@ public class MyAdapterDireccion extends BaseAdapter {
         TextView tvNombreDir = convertView.findViewById(R.id.tv_nombre_dir);
         TextView tvCiudadDir = convertView.findViewById(R.id.tv_ciudad_dir);
         tvNombreDir.setText(this.direccionesList.get(position).getNombre_dir());
-        tvCiudadDir.setText(this.direccionesList.get(position).getCiudad_dir());
+        tvCiudadDir.setText(this.direccionesList.get(position).getCiudad_dir().replace(this.direccionesList.get(position).getNombre_dir(), "").replace(',', ' ').trim());
 
         return convertView;
     }

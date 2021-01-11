@@ -14,21 +14,11 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
                                                                     "ciudad_dir TEXT, " +
                                                                     "latitud DOUBLE, " +
                                                                     "longitud DOUBLE, " +
-                                                                    "inicial BOOLEAN, " +
                                                                     "id_ruta INTEGER, " +
-                                                                    "FOREIGN KEY(id_ruta) REFERENCES Rutas(id_ruta) ON DELETE CASCADE);";
+                                                                    "FOREIGN KEY(id_ruta) REFERENCES Rutas(id_ruta) ON DELETE CASCADE ON UPDATE CASCADE);";
 
     private final String SQLRutas = "CREATE TABLE Rutas(id_ruta INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                                        "nombre_ruta TEXT, " +
-                                                        "distancia TEXT, " +
-                                                        "tiempo TEXT);";
-
-    private final String SQLPasos = "CREATE TABLE Pasos(id_pasos INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                                        "numero INTEGER, " +
-                                                        "instrucciones TEXT, " +
-                                                        "polilinea TEXT, " +
-                                                        "id_ruta INTEGER, " +
-                                                        "FOREIGN KEY(id_ruta) REFERENCES Rutas(id_ruta) ON DELETE CASCADE);";
+                                                        "nombre_ruta TEXT)";
 
     // aqui se agrego el constructor
     public AdminSQLiteOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
@@ -51,14 +41,12 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
         // se crea una tabla en Mi Base de Datos que tiene: nombre, direccion de destino y direccion inicial
         BaseDeDatos.execSQL(SQLRutas);
         BaseDeDatos.execSQL(SQLDirecciones);
-        BaseDeDatos.execSQL(SQLPasos);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase BaseDeDatos, int oldVersion, int newVersion) {
         BaseDeDatos.execSQL("DROP TABLE IF EXISTS Direcciones");
         BaseDeDatos.execSQL("DROP TABLE IF EXISTS Rutas");
-        BaseDeDatos.execSQL("DROP TABLE IF EXISTS Pasos");
 
         onCreate(BaseDeDatos);
 

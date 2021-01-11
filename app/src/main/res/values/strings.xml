@@ -13,4 +13,11 @@
     <string name="ruta_string">Ruta</string>
     <string name="go">Go</string>
     <string name="direccion_destino">Ingrese Destino</string>
+    <string name="finalizada">Finalizada</string>
+    <string name="pos_actual">Posición Actual</string>
+    <string name="ingrese_nombre">Ingrese el nombre que tendrá la Ruta</string>
+    <string name="ingrese_dir_ini">Ingrese la dirección desde donde se partirá</string>
+    <string name="ingrese_dir">Ingrese el resto de direcciones</string>
+    <string name="info_ini">Información de la dirección inicial</string>
+    <string name="creacion">Creación de ruta</string>
 </resources>

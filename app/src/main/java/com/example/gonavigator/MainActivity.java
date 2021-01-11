@@ -2,7 +2,9 @@ package com.example.gonavigator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,15 +16,22 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private Button btnTest;
     private ListView lvRutas;
+    private SharedPreferences prefs;
+
+    @Override
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.prefs = this.getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
 
         lvRutas = findViewById(R.id.lv_rutas);
         this.btnTest = findViewById(R.id.button_Test);
@@ -35,19 +44,19 @@ public class MainActivity extends AppCompatActivity {
         // llamamos a la base de datos
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"rutas_BD",null, 1);
         SQLiteDatabase bd = admin.getReadableDatabase();
-        Log.e("###############", "Se abre la base de datos");
+        Log.i("Acceso bd", "Se abre la base de datos");
 
         // creamos el cursor que empieza con valor vacio(nulo)
         List<String> rutaListado = new ArrayList<>();
         Cursor cursor = bd.rawQuery("SELECT * FROM Rutas", null);
-        Log.e("###############", "Se pasa al cursor las rutas");
+        Log.i("Query realizada", "Se pasa al cursor las rutas");
 
         // Aqui se guardan los nombres de las rutas creadas
         if(cursor.moveToFirst())
         {
             while(!cursor.isAfterLast())
             {
-                Log.e("###############", "Se almacena el nombre de la ruta");
+                Log.i("Rutas de la bd", "Se almacena el nombre de la ruta "+cursor.getString(1));
                 rutaListado.add(cursor.getString(1));
 
                 cursor.moveToNext();
@@ -62,12 +71,24 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.lista_rutas_inicio, R.id.tv_lista_rutas, rutaListado);
         this.lvRutas.setAdapter(adapter);
-        Log.e("###############", "Se crea la lista de rutas");
+        Log.i("Adaptador de la lista", "Se crea la lista de rutas");
 
         this.lvRutas.setOnItemClickListener((parent, view, position, id) -> {
-            Log.e("###############", "Redirecciona a la ruta seleccionada");
+            Log.i("Seleccionada una ruta", "Redirecciona a la ruta seleccionada");
+            saveOnSharedPreferences(parent.getItemAtPosition(position).toString());
             Intent intent = new Intent(view.getContext(), RutaActivity.class);
             startActivity(intent);
         });
+    }
+
+    //Método para guardar las shared preferences del nombre de la ruta
+    private void saveOnSharedPreferences(String nombreRuta){
+        SharedPreferences.Editor editor = this.prefs.edit();
+        editor.clear();
+
+        editor.putString("nombre_ruta", nombreRuta);
+        Log.i("shared preferences", "Se guarda el nombre de la ruta: "+nombreRuta);
+
+        editor.apply();
     }
 }

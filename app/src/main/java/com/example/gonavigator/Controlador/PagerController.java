@@ -18,9 +18,9 @@ public class PagerController extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new Mapa();
+                return new MapaFragment();
             case 1:
-                return new Ruta();
+                return new RutaFragment();
             default:
                 return null;
         }

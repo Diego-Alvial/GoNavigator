@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Controlador.Ruta">
+    tools:context=".Controlador.RutaFragment">
 
     <ListView
         android:id="@+id/lv_dir_ordenado"
@@ -23,7 +23,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button8"
+            android:id="@+id/btn_volver_lista"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -36,7 +36,7 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button9"
+            android:id="@+id/btn_editar_ruta"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
