@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -69,8 +70,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         //Se traen y guardan los datos desde bd
         direcciones = extraerDatosBD();
         //Añade los marker
-        for (Direcciones item : direcciones) {
-            addMarker(item, googleMap, DEFAULT_ZOOM);
+        for (int i=0; i<direcciones.size(); i++) {
+            addMarker(direcciones.get(i), googleMap, DEFAULT_ZOOM, i);
         }
         //Si no esta iniciada la api, la consigue
         if (geoApiContext == null) {
@@ -179,18 +180,26 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         this.polilinea.add(pos);
     }
     //Agregador de markers
-    public void addMarker(Direcciones direccion, GoogleMap googleMap, float zoom){
+    public void addMarker(Direcciones direccion, GoogleMap googleMap, float zoom, int num){
 
-    LatLng pos = new LatLng(direccion.getLatitud(), direccion.getLongitud());
-    MarkerOptions mk = new MarkerOptions().position(pos).title(direccion.getNombre_dir());
-    googleMap.addMarker(mk);
-    Log.i("Marker agregado", direccion.getNombre_dir());
+        LatLng pos = new LatLng(direccion.getLatitud(), direccion.getLongitud());
+        MarkerOptions mk = new MarkerOptions().position(pos).title(direccion.getNombre_dir());
+        googleMap.addMarker(mk);
+        Log.i("Marker agregado", direccion.getNombre_dir());
 
-    if(inicial){
+        if(inicial){
             Log.i("Marker inicial", direccion.getNombre_dir());
+            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
             inicial=false;
         }
+        if(num == direcciones.size()-1){
+            Log.i("Marker final", direccion.getNombre_dir());
+            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        }
+
+        googleMap.addMarker(mk);
+
     }
 
     public List<Direcciones> extraerDatosBD(){
