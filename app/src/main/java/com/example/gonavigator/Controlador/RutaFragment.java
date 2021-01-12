@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 import com.example.gonavigator.AdminSQLiteOpenHelper;
 import com.example.gonavigator.DirOrganizadaAdapter;
-import com.example.gonavigator.ListViewModel;
+import com.example.gonavigator.models.ListViewModel;
 import com.example.gonavigator.MainActivity;
 import com.example.gonavigator.R;
 import com.example.gonavigator.RutaActivity;
@@ -43,6 +43,7 @@ public class RutaFragment extends Fragment {
 
     private ListViewModel viewModel;
     private final List<Direcciones> originales = new ArrayList<>();
+    private final List<Direcciones> aux = new ArrayList<>();
     private final List<Integer> ordenadas = new ArrayList<>();
     private int id;
     private SharedPreferences prefs;
@@ -54,57 +55,50 @@ public class RutaFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(ListViewModel.class);
-
+        //Se obtienen las direcciones desde el mapaFragment
         viewModel.getOriginales().observe(getViewLifecycleOwner(), list -> {
             for( Direcciones item: list){
                 Log.i("originales", item.getNombre_dir());
                 originales.add(item);
+                Direcciones auxiliar = new Direcciones();
+                auxiliar.setNombre_dir(item.getNombre_dir());
+                auxiliar.setCiudad_dir(item.getCiudad_dir());
+                auxiliar.setLatitud(item.getLatitud());
+                auxiliar.setLongitud(item.getLongitud());
+                aux.add(auxiliar);
             }
         });
-
+        //Se obtiene el orden en el que deben ir las direcciones, menos la de inicio y la de destino
         viewModel.getOrdenadas().observe(getViewLifecycleOwner(), list -> {
             for( int i: list) {
                 Log.i("ordenadas", String.valueOf(i));
                 ordenadas.add(i);
             }
-
-            Direcciones temp = new Direcciones();
-            for( int i=1; i<originales.size()-2;i++){
-                for (int j = 0; j <originales.size() - i - 2; j++) {
-                    Log.e("antes burbuja",ordenadas.get(j+1) + " es mayor que " + ordenadas.get(j));
-                    if (ordenadas.get(j+1) < ordenadas.get(j)) {
-
-                        temp.setNombre_dir(originales.get(ordenadas.get(j+1)+1).getNombre_dir());
-                        temp.setCiudad_dir(originales.get(ordenadas.get(j+1)+1).getCiudad_dir());
-                        temp.setLatitud(originales.get(ordenadas.get(j+1)+1).getLatitud());
-                        temp.setLongitud(originales.get(ordenadas.get(j+1)+1).getLongitud());
-                        Log.e("burbuja",temp.getNombre_dir() + " esta siendo cambiado por " + originales.get(ordenadas.get(j)+1).getNombre_dir());
-
-                        originales.get(ordenadas.get(j+1)+1).setNombre_dir(originales.get(ordenadas.get(j)+1).getNombre_dir());
-                        originales.get(ordenadas.get(j+1)+1).setCiudad_dir(originales.get(ordenadas.get(j)+1).getCiudad_dir());
-                        originales.get(ordenadas.get(j+1)+1).setLatitud(originales.get(ordenadas.get(j)+1).getLatitud());
-                        originales.get(ordenadas.get(j+1)+1).setLongitud(originales.get(ordenadas.get(j)+1).getLongitud());
-
-                        originales.get(ordenadas.get(j)+1).setNombre_dir(temp.getNombre_dir());
-                        originales.get(ordenadas.get(j)+1).setCiudad_dir(temp.getCiudad_dir());
-                        originales.get(ordenadas.get(j)+1).setLatitud(temp.getLatitud());
-                        originales.get(ordenadas.get(j)+1).setLongitud(temp.getLongitud());
-                    }
-                }
+            //Codigo de ordenamiento para las direcciones
+            for( int i=1; i<originales.size()-1;i++){
+                Log.e("original antes", originales.get(i).getNombre_dir()+" con i= "+i);
+                Log.e("auxiliar antes", aux.get(ordenadas.get(i-1)+1).getNombre_dir()+" con i= "+i+" ordenadas.get= " +ordenadas.get(i-1)+1);
+                originales.get(i).setNombre_dir(aux.get(ordenadas.get(i-1)+1).getNombre_dir());
+                Log.e("original despues", originales.get(i).getNombre_dir()+" con i= "+i);
+                Log.e("auxiliar despues", aux.get(ordenadas.get(i-1)+1).getNombre_dir()+" con i= "+i+" ordenadas.get= " +ordenadas.get(i-1)+1);
+                originales.get(i).setCiudad_dir(aux.get(ordenadas.get(i-1)+1).getCiudad_dir());
+                originales.get(i).setLatitud(aux.get(ordenadas.get(i-1)+1).getLatitud());
+                originales.get(i).setLongitud(aux.get(ordenadas.get(i-1)+1).getLongitud());
             }
-            for( Direcciones item: originales) {
-                Log.i("ordenadas resultado", item.getNombre_dir());
+            for(int i=0; i<originales.size(); i++) {
+                Log.i("ordenadas resultado", originales.get(i).getNombre_dir());
+                Log.i("ordenadas resultado", aux.get(i).getNombre_dir());
             }
             crearLista();
 
         });
-
+        //Se obtienen las shared preferences
         this.prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
         this.id = prefs.getInt("id_RUTA", 0);
 
         this.btnEditarRuta = getActivity().findViewById(R.id.btn_editar_ruta);
         this.btnVolverLista = getActivity().findViewById(R.id.btn_volver_lista);
-
+        //Boton volver ruta
         this.btnVolverLista.setOnClickListener(v -> {
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
@@ -112,7 +106,7 @@ public class RutaFragment extends Fragment {
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             startActivity(intent);
         });
-
+        //Boton editar ruta
         this.btnEditarRuta.setOnClickListener(v -> {
             saveOnSharedPreferences(id);
             Intent intent = new Intent(view.getContext(), RutaActivity.class);
@@ -140,7 +134,7 @@ public class RutaFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ruta, container, false);
     }
-
+    //Guardar las preferencias antes de volver al editar ruta
     private void saveOnSharedPreferences(int id){
         SharedPreferences.Editor editor = this.prefs.edit();
         editor.clear();

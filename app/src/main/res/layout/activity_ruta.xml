@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/quantum_grey300"
     tools:context=".RutaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_personalizada"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@color/quantum_bluegrey400"
-        app:titleTextColor="@color/white"
+        android:background="@color/quantum_teal700"
         android:elevation="4dp"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +31,8 @@
             android:id="@+id/textView2"
             android:layout_width="360dp"
             android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:fontFamily="@font/alba"
             android:text="@string/ingrese_nombre" />
 
         <EditText
@@ -38,7 +40,9 @@
             android:layout_width="360dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:textSize="24sp"
             android:ems="10"
+            android:fontFamily="@font/chocolate_bold"
             android:hint="@string/nombre_ruta"
             android:importantForAutofill="no"
             android:inputType="textPersonName" />
@@ -47,6 +51,8 @@
             android:id="@+id/textView3"
             android:layout_width="360dp"
             android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:fontFamily="@font/alba"
             android:text="@string/ingrese_dir_ini" />
 
         <RelativeLayout
@@ -58,7 +64,9 @@
                 android:id="@+id/et_dir_inicial"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
+                android:textSize="24sp"
                 android:ems="10"
+                android:fontFamily="@font/chocolate_bold"
                 android:hint="@string/inicial"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName" />
@@ -79,6 +87,8 @@
         <TextView
             android:id="@+id/textView6"
             android:layout_width="360dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/alba"
             android:layout_height="wrap_content"
             android:text="@string/info_ini" />
 
@@ -87,15 +97,25 @@
             android:layout_height="wrap_content"
             android:background="@drawable/border_resource"
             android:gravity="center"
+            android:padding="2dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_nombre_dir_ini"
+                android:textSize="24sp"
+                android:fontFamily="@font/chocolate_bold"
                 android:layout_width="360dp"
+                android:layout_marginBottom="1dp"
                 android:layout_height="wrap_content" />
-
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/tv_ciudad_dir_ini"
+                android:textSize="24sp"
+                android:fontFamily="@font/chocolate_bold"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content" />
 
@@ -106,16 +126,20 @@
             android:layout_width="360dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/alba"
             android:text="@string/ingrese_dir" />
 
         <EditText
             android:id="@+id/et_dir_nueva"
             android:layout_width="360dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="24sp"
             android:drawableStart="@drawable/ic_location"
             android:drawablePadding="16dp"
             android:ems="10"
+            android:fontFamily="@font/chocolate_bold"
             android:hint="@string/direccion_destino"
             android:importantForAutofill="no"
             android:inputType="textPersonName" />
@@ -124,7 +148,8 @@
             android:id="@+id/lv_direcciones"
             android:layout_width="360dp"
             android:layout_height="225dp"
-            android:background="@drawable/border_resource" />
+            android:background="@drawable/border_resource"
+            android:padding="3dp"/>
 
         <LinearLayout
             android:layout_width="360dp"
@@ -135,6 +160,9 @@
             <Button
                 android:id="@+id/btn_eliminar_ruta"
                 android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:fontFamily="@font/chocolate_bold"
+                android:textColor="@color/quantum_grey300"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/holo_red_dark"
@@ -151,7 +179,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/teal_700"
+                android:textSize="20sp"
+                android:fontFamily="@font/chocolate_bold"
+                android:textColor="@color/quantum_grey300"
+                android:backgroundTint="@color/quantum_teal700"
                 android:text="@string/calcular_ruta" />
         </LinearLayout>
 

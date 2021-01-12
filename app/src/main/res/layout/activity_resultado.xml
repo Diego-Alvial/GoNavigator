@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/quantum_grey300"
     tools:context=".ResultadoActivity"
     android:orientation="vertical">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_Ruta"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/quantum_bluegrey500"
+        app:tabTextColor="@color/quantum_cyan900">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_Mapa"

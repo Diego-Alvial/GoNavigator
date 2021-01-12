@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
+//Controller de los tabs de la pantalla Resultado
 public class PagerController extends FragmentPagerAdapter {
     private int numeroTabs;
 

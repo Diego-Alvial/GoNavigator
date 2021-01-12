@@ -7,11 +7,14 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
+    android:background="@color/quantum_grey300"
     tools:context=".Controlador.RutaFragment">
 
     <ListView
         android:id="@+id/lv_dir_ordenado"
         android:layout_width="360dp"
+        android:background="@drawable/border_resource"
+        android:padding="3dp"
         android:layout_height="450dp">
 
     </ListView>
@@ -25,6 +28,10 @@
         <Button
             android:id="@+id/btn_volver_lista"
             android:layout_width="200dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/chocolate_bold"
+            android:textColor="@color/quantum_grey300"                android:backgroundTint="@color/quantum_teal700"
+
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/lista_rutas" />
@@ -38,6 +45,10 @@
         <Button
             android:id="@+id/btn_editar_ruta"
             android:layout_width="200dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/chocolate_bold"
+            android:textColor="@color/quantum_grey300"
+            android:backgroundTint="@color/quantum_teal700"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/editar_ruta" />

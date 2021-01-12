@@ -20,4 +20,7 @@
     <string name="ingrese_dir">Ingrese el resto de direcciones</string>
     <string name="info_ini">Información de la dirección inicial</string>
     <string name="creacion">Creación de ruta</string>
+    <string name="logo">Logo</string>
+    <string name="datos">Datos de la ruta</string>
+    <string name="rutas_creadas">Rutas creadas anteriormente:</string>
 </resources>

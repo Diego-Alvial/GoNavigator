@@ -34,20 +34,21 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    // aqui se agrega los metodos onCreate y onUpgrade
     @Override
     public void onCreate(SQLiteDatabase BaseDeDatos) {
 
-        // se crea una tabla en Mi Base de Datos que tiene: nombre, direccion de destino y direccion inicial
+        // se crea una tabla en Mi Base de Datos
         BaseDeDatos.execSQL(SQLRutas);
         BaseDeDatos.execSQL(SQLDirecciones);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase BaseDeDatos, int oldVersion, int newVersion) {
+        //Se eliminan las tablas anteriores
         BaseDeDatos.execSQL("DROP TABLE IF EXISTS Direcciones");
         BaseDeDatos.execSQL("DROP TABLE IF EXISTS Rutas");
 
+        //Se crean de nuevo las tablas
         onCreate(BaseDeDatos);
 
     }

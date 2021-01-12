@@ -32,6 +32,7 @@ public class ResultadoActivity extends AppCompatActivity{
         tabMapa = findViewById(R.id.tab_Mapa);
         tabRuta = findViewById(R.id.tab_Ruta);
 
+        //Se activa las tab
         pagerAdapter = new PagerController(getSupportFragmentManager(), tlRuta.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         tlRuta.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

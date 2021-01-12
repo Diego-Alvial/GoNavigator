@@ -49,6 +49,7 @@ public class DireccionAdapter extends BaseAdapter {
 
         ImageButton ibtnBorrarDir = convertView.findViewById(R.id.ibtn_borrar_dir);
 
+        //Se elimina la direccion seleccionada
         ibtnBorrarDir.setOnClickListener(v -> {
             direccionesList.remove(position);
             notifyDataSetChanged();

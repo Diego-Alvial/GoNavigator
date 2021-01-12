@@ -46,6 +46,7 @@ public class DirOrganizadaAdapter extends BaseAdapter {
         LayoutInflater layoutInflater = LayoutInflater.from(this.context);
         convertView = layoutInflater.inflate(this.layout, null);
 
+        //Se rellena la lista
         TextView tvNombreDirOrd = convertView.findViewById(R.id.tv_nombre_dir_ord);
         tvNombreDirOrd.setText(this.direccionesList.get(position).getNombre_dir());
 

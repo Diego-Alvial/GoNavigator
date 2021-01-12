@@ -15,8 +15,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +64,7 @@ public class RutaActivity extends AppCompatActivity{
     private ListView lvDirecciones;
     private ImageView imgUbicacionActual;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     private SharedPreferences prefs;
     private Direcciones inicial = new Direcciones();
@@ -88,6 +93,7 @@ public class RutaActivity extends AppCompatActivity{
         lvDirecciones = findViewById(R.id.lv_direcciones);
         imgUbicacionActual = findViewById(R.id.img_ubicacion_actual);
         toolbar = findViewById(R.id.toolbar_personalizada);
+        progressBar = findViewById(R.id.progress_bar);
 
         setSupportActionBar(this.toolbar);
         //Verificar que la toolbar no sea null para colocarle el titulo
@@ -101,20 +107,18 @@ public class RutaActivity extends AppCompatActivity{
 
         //Activar el boton para volver
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            }
-        });
-
+        toolbar.setNavigationOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(),MainActivity.class)));
+        //Inicializar las preferencias
         this.prefs = this.getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
 
         //Inicializar lugares para el autorelleno con la key de la API
         Places.initialize(this, getString(R.string.google_maps_key));
 
+        //Inicializar detector de hubicacion actual
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //EditText del autollenado de la direccion inicial
         etDirInicial.setFocusable(false);
         etDirInicial.setOnClickListener(v -> {
             //Inicializar la lista de lugares
@@ -125,6 +129,7 @@ public class RutaActivity extends AppCompatActivity{
             startActivityForResult(intent, 100);
         });
 
+        //EditText del autollenado de direcciones
         etDirNueva.setFocusable(false);
         etDirNueva.setOnClickListener(v -> {
             //Inicializar la lista de lugares
@@ -145,7 +150,7 @@ public class RutaActivity extends AppCompatActivity{
             btnCalcularRuta.setOnClickListener(v -> {
 
                 if(ValidarDireccion()) {
-                    if (listaDireccion.size()>10){
+                    if (listaDireccion.size()>9){
                         Toast.makeText(getApplicationContext(), "Debe ingresar menos de diez direcciones", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -158,6 +163,7 @@ public class RutaActivity extends AppCompatActivity{
             });
         }
         else{
+            //Si la ruta ya existe
             etNombreRuta.setFocusable(false);
             this.ruta.setNombeRuta(nombreRuta);
 
@@ -177,7 +183,7 @@ public class RutaActivity extends AppCompatActivity{
             //Lista las direcciones
             DireccionAdapter direccionAdapter = new DireccionAdapter(this, listaDireccion, R.layout.list_direcciones);
             this.lvDirecciones.setAdapter(direccionAdapter);
-
+            //Boton eliminar ruta
             btnEliminarRuta.setOnClickListener(v -> {
                 String[] args = new String[]{String.valueOf(rutaId)};
                 bd.delete("Rutas", "id_ruta = ? ", args);
@@ -189,7 +195,7 @@ public class RutaActivity extends AppCompatActivity{
             btnCalcularRuta.setOnClickListener(v -> {
 
                 if(ValidarDireccion()) {
-                    if (listaDireccion.size()>10){
+                    if (listaDireccion.size()>9){
                         Toast.makeText(getApplicationContext(), "Debe ingresar menos de diez direcciones", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -202,7 +208,7 @@ public class RutaActivity extends AppCompatActivity{
                 }
             });
         }
-
+        //Obtiene la posicion actual
         imgUbicacionActual.setOnClickListener(v -> obtenerPosicionActual());
     }
 
@@ -273,8 +279,7 @@ public class RutaActivity extends AppCompatActivity{
         }
         return true;
     }
-    // metodos para dar de alta las rutas
-    // guardar las o la ruta ingresada
+    // guardar la ruta ingresada
     public boolean Registrar(){
 
         // creamos un objeto de la clase que se creo anteriormente con nombre admin = a un objeto de la misma clase(parametros: nombre de la DB, version 1, )
@@ -339,7 +344,7 @@ public class RutaActivity extends AppCompatActivity{
             cursor.close();
         }
     }
-
+    //Se lee la db en caso de que ya existe la ruta
     private int leerBD(SQLiteDatabase bd) {
         Cursor cursor = bd.rawQuery("SELECT * FROM Rutas WHERE nombre_ruta = '" +ruta.getNombeRuta() +"'", null);
 
@@ -355,6 +360,7 @@ public class RutaActivity extends AppCompatActivity{
 
             cursor = bd.rawQuery("SELECT * FROM Direcciones WHERE id_ruta = ?", args);
 
+            //Se guardan las direcciones en una lista
             if(cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     Direcciones direccion= new Direcciones();
@@ -375,6 +381,7 @@ public class RutaActivity extends AppCompatActivity{
                     cursor.moveToNext();
                 }
             }
+            //Elimina la inicial de la lista
             inicial = listaDireccion.get(0);
             listaDireccion.remove(0);
             cursor.close();
@@ -385,26 +392,27 @@ public class RutaActivity extends AppCompatActivity{
     private void obtenerPosicionActual(){
         Log.e("Acceso", "Se ha iniciado obtenerPosicionActual");
         //DIreccion actual
-
+        progressBar.setVisibility(View.VISIBLE);
         if (ActivityCompat.checkSelfPermission(RutaActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                // Got last known location. In some rare situations this can be null.
+                // Se obtiene la ultima posición, puede ser nula
                 Log.e("Posicion actual", String.valueOf(location.getLatitude()));
                 Log.e("Posicion actual", String.valueOf(location.getLongitude()));
 
-                //Colocar la direccion inicial en el editText
-                tvNombreDirIni.setText("LATITUD: "+location.getLatitude());
-                tvCiudadDirIni.setText("LONGITUD: "+location.getLongitude());
-
                 //Guardar la direccion inicial
-                inicial.setNombre_dir("LATITUD: "+location.getLatitude());
-                inicial.setCiudad_dir("LONGITUD: "+location.getLongitude());
+                inicial.setNombre_dir("Usando la ubicación actual");
+                inicial.setCiudad_dir("LATITUD: "+inicial.getLatitud()+"  LONGITUD: "+inicial.getLongitud());
                 inicial.setLatitud(location.getLatitude());
                 inicial.setLongitud(location.getLongitude());
+
+                //Colocar la direccion inicial en el editText
+                tvNombreDirIni.setText(inicial.getNombre_dir());
+                tvCiudadDirIni.setText(inicial.getCiudad_dir());
             });
         }else{
             ActivityCompat.requestPermissions(RutaActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     //Método para guardar las shared preferences de la id de la ruta

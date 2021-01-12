@@ -1,4 +1,4 @@
-package com.example.gonavigator;
+package com.example.gonavigator.models;
 
 
 import androidx.lifecycle.LiveData;
@@ -10,7 +10,7 @@ import com.example.gonavigator.models.Direcciones;
 
 import java.util.List;
 import java.util.Objects;
-
+//Clase que permite que interactuen los fragments entre si
 public class ListViewModel extends ViewModel {
 
     private MutableLiveData<List<Integer>> direccionesOrdenada = new MutableLiveData<>();

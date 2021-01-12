@@ -9,9 +9,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     private Button btnTest;
     private ListView lvRutas;
     private SharedPreferences prefs;
+    private TextView tvRutasCreadas;
 
     @Override
     public void onBackPressed() {
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity{
         this.prefs = this.getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
 
         lvRutas = findViewById(R.id.lv_rutas);
+        tvRutasCreadas = findViewById(R.id.tv_rutas_creadas);
         this.btnTest = findViewById(R.id.button_Test);
 
         this.btnTest.setOnClickListener(v -> {
@@ -66,6 +70,8 @@ public class MainActivity extends AppCompatActivity{
 
         if(rutaListado.isEmpty()){
             Log.e("###############", "lista vacia");
+            this.lvRutas.setVisibility(View.INVISIBLE);
+            this.tvRutasCreadas.setVisibility(View.INVISIBLE);
             return;
         }
 
